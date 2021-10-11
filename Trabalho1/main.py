@@ -1,6 +1,4 @@
-import ctypes
-from inspect import getmembers, isclass, isfunction
-from typing import NewType
+
 import clr
 import sys
 
@@ -15,14 +13,15 @@ neural = Backpropagation(2, 1)
 
 trainingSet = DataSet(2,1)
 
-# Ajustar treinamento, são dois parametros de arrays de double
-trainingSet.Add(DataSetObject( {0,0}, {0} ))
-trainingSet.Add(DataSetObject( {0,1}, {1} ))
-trainingSet.Add(DataSetObject( {1,0}, {1} ))
-trainingSet.Add(DataSetObject( {1,1}, {0} ))
+# Treinamento do Set
+trainingSet.Add(DataSetObject( [0,0], [0] ))
+trainingSet.Add(DataSetObject( [0,1], [1] ))
+trainingSet.Add(DataSetObject( [1,0], [1] ))
+trainingSet.Add(DataSetObject( [1,1], [0] ))
 
-neural.learn(trainingSet)
+neural.Learn(trainingSet)
 
+# Exemplo de reconhecimento
+res = neural.Recognize([0,1])
 
-#Para verificar as funções da classe
-#print(getmembers(neural))
+print("%.0f" % res[0])
