@@ -76,15 +76,26 @@ def trainingSet(neuronIn, neuronOut):
 
     trainingSet = DataSet(neuronIn, neuronOut)
 
+    add = 0
+    toAdd = 0
+
     # Treinamento do Set
     for row in dataSet.itertuples(index=True, name='Pandas'):
+
+        add += 1
+        #Adiciona 1 a cada 3
+        if add==3:
+            print(row.Index, toAdd)
+            trainingSet.Add(DataSetObject( [ float(row.age), float(row.hypertension), float(row.heart_disease), float(row.ever_married), float(row.Residence_type), float(row.avg_glucose_level), float(row.bmi), float(row.gender_Female), float(row.gender_Male), float(row.gender_Other), float(row.work_type_Govt_job), float(row.work_type_Never_worked), float(row.work_type_Private), float(row.work_type_Self_employed), float(row.work_type_children), float(row.smoking_status_Unknown), float(row.smoking_status_formerly_smoked), float(row.smoking_status_never_smoked), float(row.smoking_status_smokes)], [float(row.stroke)]))
+            add = 0
+            toAdd += 1
+        #Limitado para 100 inserções
+        if toAdd == 100:
+            break
         
-        trainingSet.Add(DataSetObject( [ float(row.age), float(row.hypertension), float(row.heart_disease), float(row.ever_married), float(row.Residence_type), float(row.avg_glucose_level), float(row.bmi), float(row.gender_Female), float(row.gender_Male), float(row.gender_Other), float(row.work_type_Govt_job), float(row.work_type_Never_worked), float(row.work_type_Private), float(row.work_type_Self_employed), float(row.work_type_children), float(row.smoking_status_Unknown), float(row.smoking_status_formerly_smoked), float(row.smoking_status_never_smoked), float(row.smoking_status_smokes)], [float(row.stroke)]))
-        break
+    neuralNet.Learn(trainingSet)
 
-    print(trainingSet)
-
-    #neuralNet.Learn(trainingSet)
+    print('Entrada esperada, ', trainingSet.GetInputSize())
 
     # Exemplo de reconhecimento
     #res = neuralNet.Recognize([0,1])
