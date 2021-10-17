@@ -1,17 +1,18 @@
 
 import clr
 import sys, os
-from numpy import float64
 import pandas as pd 
-from decimal import Decimal
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 sys.path.append(os.path.join(__location__, 'AdrenaDLL'))
 clr.AddReference("ADReNA_API")
+clr.AddReference("Newtonsoft.Json")
 
+from Newtonsoft.Json import *
 from ADReNA_API.NeuralNetwork import Backpropagation
 from ADReNA_API.Data import DataSet, DataSetObject
+from ADReNA_API.Util import Export
 
 
 def exampleBackpropagation():
@@ -31,7 +32,6 @@ def exampleBackpropagation():
     res = neural.Recognize([0,1])
 
     print("%.0f" % res[0])
-
 
 def openTrainingSet(fileName) :
     trainingSet = pd.read_csv(os.path.join(__location__, 'Dataset', fileName))
@@ -72,31 +72,43 @@ def datasetTreatment():
 def trainingSet(neuronIn, neuronOut):
     dataSet = datasetTreatment()
 
+    fractionDataSet = dataSet.sample(frac=0.002)
+
+    print(len(fractionDataSet))
+
+    temStroke = 0
+    naoTemStroke = 0
+
+    for row in fractionDataSet.itertuples(index=True, name='Pandas'):
+        print(row)
+        if row.stroke == 1:
+            temStroke += 1
+        else:
+            naoTemStroke += 1
+
+    print('tem Stroke', temStroke)
+    print('Nao tem Stroke', naoTemStroke)
+
     neuralNet = Backpropagation(neuronIn, neuronOut)
 
     trainingSet = DataSet(neuronIn, neuronOut)
-
-    add = 0
-    toAdd = 0
-
+    
     # Treinamento do Set
-    for row in dataSet.itertuples(index=True, name='Pandas'):
+    for row in fractionDataSet.itertuples(index=True, name='Pandas'):
 
-        add += 1
-        #Adiciona 1 a cada 3
-        if add==3:
-            print(row.Index, toAdd)
-            trainingSet.Add(DataSetObject( [ float(row.age), float(row.hypertension), float(row.heart_disease), float(row.ever_married), float(row.Residence_type), float(row.avg_glucose_level), float(row.bmi), float(row.gender_Female), float(row.gender_Male), float(row.gender_Other), float(row.work_type_Govt_job), float(row.work_type_Never_worked), float(row.work_type_Private), float(row.work_type_Self_employed), float(row.work_type_children), float(row.smoking_status_Unknown), float(row.smoking_status_formerly_smoked), float(row.smoking_status_never_smoked), float(row.smoking_status_smokes)], [float(row.stroke)]))
-            add = 0
-            toAdd += 1
-        #Limitado para 100 inserções
-        if toAdd == 100:
-            break
         
-    neuralNet.Learn(trainingSet)
+        trainingSet.Add(DataSetObject( [ float(row.age), float(row.hypertension), float(row.heart_disease), float(row.ever_married), float(row.Residence_type), float(row.avg_glucose_level), float(row.bmi), float(row.gender_Female), float(row.gender_Male), float(row.gender_Other), float(row.work_type_Govt_job), float(row.work_type_Never_worked), float(row.work_type_Private), float(row.work_type_Self_employed), float(row.work_type_children), float(row.smoking_status_Unknown), float(row.smoking_status_formerly_smoked), float(row.smoking_status_never_smoked), float(row.smoking_status_smokes)], [float(row.stroke)]))
 
+    
+    print('Treinando ...')
+    neuralNet.Learn(trainingSet)
+    print('Treinamento concluido!')
     print('Entrada esperada, ', trainingSet.GetInputSize())
 
+    Export.KnowledgeBase(neuralNet, 'trainedKnowledgeBase')
+    Export.NeuralNetworkStructure(neuralNet, 'trainedNeuralNetworkStructure')
+    
+    
     # Exemplo de reconhecimento
     #res = neuralNet.Recognize([0,1])
 
