@@ -72,7 +72,7 @@ def datasetTreatment():
 def trainingSet(neuronIn, neuronOut):
     dataSet = datasetTreatment()
 
-    fractionDataSet = dataSet.sample(frac=0.002)
+    fractionDataSet = dataSet.sample(frac=0.01)
 
     print(len(fractionDataSet))
 

@@ -142,11 +142,43 @@ class AppApp:
 
     def buttonClick(self):
         
-        print('test',self.fld_Age.get())
         self.log_Results.delete('1.0',tk.END)
-        self.log_Results.insert('0.0', "test")
+        
 
 
+
+
+        age = self.fld_Age.get()
+        hypertension = 1 if self.cbx_Hypertension.get()=="True" else 0
+        heart_disease = 1 if self.cbx_HeartDisease.get()=="True" else 0
+        ever_married = 1 if self.cbx_EverMarried.get()=="True" else 0
+        Residence_type = 1 if self.cbx_EverMarried.get()=="Urban" else 0
+        avg_glucose_level = self.fld_GlucoseLevel.get()
+        bmi = self.fld_BMI.get()
+        gender_Female = 1 if self.cbx_Gender.get()=="Female" else 0
+        gender_Male = 1 if self.cbx_Gender.get()=="Male" else 0
+        gender_Other = 1 if self.cbx_Gender.get()=="Others" else 0
+        work_type_Govt_job = 1 if self.cbx_WorkType.get()=="Govt_job" else 0
+        work_type_Never_worked = 1 if self.cbx_WorkType.get()=="Never_worked" else 0
+        work_type_Private = 1 if self.cbx_WorkType.get()=="Private" else 0
+        work_type_Self_employed = 1 if self.cbx_WorkType.get()=="Self_employed" else 0
+        work_type_children = 1 if self.cbx_WorkType.get()=="children" else 0
+        smoking_status_Unknown = 1 if self.cbx_SmokeStatus.get()=="Unknown" else 0
+        smoking_status_formerly_smoked = 1 if self.cbx_SmokeStatus.get()=="formerly_smoked" else 0
+        smoking_status_never_smoked = 1 if self.cbx_SmokeStatus.get()=="never_smoked" else 0
+        smoking_status_smokes = 1 if self.cbx_SmokeStatus.get()=="smokes" else 0
+        
+        testData = [age, hypertension, heart_disease, ever_married, Residence_type, avg_glucose_level, bmi, gender_Female, gender_Male, gender_Other, work_type_Govt_job, work_type_Never_worked, work_type_Private, work_type_Self_employed, work_type_children, smoking_status_Unknown, smoking_status_formerly_smoked, smoking_status_never_smoked,smoking_status_smokes]
+
+        #print(testData)
+
+
+        neuralNet = importNeuralNet()
+        rec = reconhecimento(neuralNet, testData)
+
+
+        self.log_Results.insert('0.0', rec[0])
+        #testData = [age, hypertension, heart_disease, ever_married, Residence_type, avg_glucose_level, bmi, stroke, gender_Female, gender_Male, gender_Other, work_type_Govt_job, work_type_Never_worked, work_type_Private, work_type_Self_employed, work_type_children, smoking_status_Unknown, smoking_status_formerly_smoked, smoking_status_never_smoked,smoking_status_smokes]
     def run(self):
         self.mainwindow.mainloop()
 
